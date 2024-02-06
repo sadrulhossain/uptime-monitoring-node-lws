@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "start": "nodemon index"
+    "staging": "SET APP_ENV=staging&nodemon index",
+    "production": "SET APP_ENV=production&nodemon index"
   },
   "dependencies": {
     "lodash": "^4.17.21",

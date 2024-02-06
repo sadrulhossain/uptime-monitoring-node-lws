@@ -1,10 +1,9 @@
 // dependencies
 const {sample} = require('./handler/Sample')
-const {notFound} = require('./handler/NotFound')
 
 // module scaffolding
 const routes = {
-    'sample': sample(),
+    'sample': sample,
 }
 
 // exports module
