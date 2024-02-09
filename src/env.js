@@ -3,13 +3,17 @@
 // module scaffolding
 const env = {}
 
+const accepted_methods = ['get', 'post', 'put', 'delete']
+
 env.staging ={
     port: 3005,
     env_name: 'staging',
+    accepted_methods: accepted_methods,
 }
 env.production ={
     port: 3009,
     env_name: 'production',
+    accepted_methods: accepted_methods,
 }
 
 const current_env = typeof process.env.APP_ENV === 'string' ? process.env.APP_ENV : 'staging'

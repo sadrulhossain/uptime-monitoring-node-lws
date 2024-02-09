@@ -3,6 +3,7 @@ const url = require('url')
 const {StringDecoder} = require('string_decoder')
 const routes = require('../router/index')
 const {notFound} = require('../router/handler/NotFound')
+const {parseJsonToObject} = require('../utilities')
 
 // module scaffolding
 const handler = {}
@@ -28,14 +29,13 @@ handler.handleReqRes = (req, res) => {
 
     const handlePath = routes[path] ? routes[path]: notFound
 
-
-
     req.on('data', (buffer) => {
         real_data += decoder.write(buffer)
     })
 
     req.on('end', () => {
         real_data += decoder.end()
+        request.body = parseJsonToObject(real_data)
 
         handlePath(request, (status_code, payload) => {
             status_code = typeof(status_code) === 'number' ? status_code : 500
