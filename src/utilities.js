@@ -1,4 +1,6 @@
 // dependencies
+const crypto = require('crypto')
+const env = require('./env')
 
 // module scaffolding
 const utilities = {}
@@ -14,6 +16,15 @@ utilities.parseJsonToObject = (json_str) => {
     }
 
     return output
+}
+// hash string
+utilities.hash = (str) => {
+    return (typeof (str) === 'string' && str.length > 0) ?
+        crypto
+            .createHmac('sha256', env.secret_key)
+            .update(str)
+            .digest('hex')
+        : null
 }
 
 // export module

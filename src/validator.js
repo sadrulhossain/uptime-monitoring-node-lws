@@ -18,7 +18,7 @@ const validator = {
         this.error_msg = this.error ? msg : null
         return this
     },
-    notNull (msg) {
+    required (msg) {
         this.error = this.body[this.field_name].trim().length > 0
         this.error_msg = this.error ? msg : null
         return this

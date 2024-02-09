@@ -8,11 +8,13 @@ const accepted_methods = ['get', 'post', 'put', 'delete']
 env.staging ={
     port: 3005,
     env_name: 'staging',
+    secret_key: 'kdnswqasdkfkdldodmmd',
     accepted_methods: accepted_methods,
 }
 env.production ={
     port: 3009,
     env_name: 'production',
+    secret_key: 'fdnegellsndksdlssskz',
     accepted_methods: accepted_methods,
 }
 
