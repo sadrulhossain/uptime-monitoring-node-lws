@@ -14,22 +14,42 @@ const validator = {
     },
     type(type, msg)  {
         this.field_type = type
-        this.error = typeof (this.body[this.field_name]) === type
+        this.error = typeof (this.body[this.field_name]) !== type
+        this.error_msg = this.error ? msg : null
+        return this
+    },
+    isArray(msg) {
+        this.error = !this.body[this.field_name] instanceof Array
+        this.error_msg = this.error ? msg : null
+        return this
+    },
+    isModulas(msg) {
+        this.error = !this.body[this.field_name] % 1 !== 0
         this.error_msg = this.error ? msg : null
         return this
     },
     required (msg) {
-        this.error = this.body[this.field_name].trim().length > 0
+        this.error = this.body[this.field_name].trim().length === 0
         this.error_msg = this.error ? msg : null
         return this
     },
-    validMobile(msg) {
-        this.error = this.body[this.field_name].trim().length === 11
+    min(val, msg) {
+        this.error = this.body[this.field_name].trim().length < val
         this.error_msg = this.error ? msg : null
         return this
     },
-    validPassword(msg) {
-        this.error = this.body[this.field_name].trim().length === 11
+    max(val, msg) {
+        this.error = this.body[this.field_name].trim().length > val
+        this.error_msg = this.error ? msg : null
+        return this
+    },
+    lenMatch(val, msg) {
+        this.error = this.body[this.field_name].trim().length !== val
+        this.error_msg = this.error ? msg : null
+        return this
+    },
+    inList(list, msg) {
+        this.error = !list.includes(this.body[this.field_name])
         this.error_msg = this.error ? msg : null
         return this
     },

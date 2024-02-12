@@ -3,24 +3,23 @@ const env = require('../../env')
 const validator = require('../../validator')
 const data = require('../../lib/data')
 const {parseJsonToObject, hash} = require('../../utilities')
+const {validate} = require('./index')
+const {verifyAccess} = require('../access_control')
 
 // module scaffolding
 const handler = {}
 
+handler._module_name = 'user'
+handler._dir = 'users'
+handler._file = 'user-data-'
 
 handler.user = (request, callback) => {
-    if(env.accepted_methods.includes(request.method)){
+    // token verified module routing
+    verifyAccess(handler._module_name, request.headers, request.method, (status_code, data) => {
+        if(status_code !== 200) callback(status_code, data)
         handler._user[request.method](request, callback)
-    } else {
-        callback(405, {
-            message: 'Unauthorized request'
-        })
-    }
+    })
 }
-
-// file info
-handler._dir = 'user'
-handler._file = 'user-data-'
 
 // init request handlers
 handler._user = {}
@@ -36,6 +35,7 @@ handler._user.get = (request, callback) => {
             phone: errors.phone
         })
     }
+
     const file_name = handler._file + body.phone
     data.read(handler._dir, file_name, (read_status_code, data) => {
         if(read_status_code === 200){
@@ -76,8 +76,6 @@ handler._user.post = (request, callback) => {
             })
         }
     })
-
-
 }
 
 // handle put request
@@ -110,9 +108,6 @@ handler._user.put = (request, callback) => {
                     message: message,
                 })
             })
-            callback(read_status_code, {
-                data: user,
-            })
         } else {
             callback(read_status_code, {
                 message: data,
@@ -136,7 +131,7 @@ handler._user.delete = (request, callback) => {
     const file_name = handler._file + body.phone
     data.read(handler._dir, file_name, (read_status_code, data) => {
         if(read_status_code === 200){
-            data.update(handler._dir, file_name, (delete_status_code, message) => {
+            data.delete(handler._dir, file_name, (delete_status_code, message) => {
                 callback(delete_status_code, {
                     message: message,
                 })
@@ -149,6 +144,27 @@ handler._user.delete = (request, callback) => {
     })
 
 }
+
+// get user by phone
+handler.getUserById = (request, callback) => {
+    let body = typeof (request.body) === 'object' ? request.body : {}
+    const errors = handler._validate(body)
+
+    // if error found
+    if(errors.phone.length > 0) {
+        callback(400, {
+            phone: errors.phone
+        })
+    }
+    const file_name = handler._file + body.phone
+    data.read(handler._dir, file_name, (read_status_code, data) => {
+        callback(read_status_code, {
+            data: data,
+        })
+    })
+}
+
+
 
 handler._validate = (body) => {
     const validation =  {
@@ -163,7 +179,7 @@ handler._validate = (body) => {
         phone: validator.with(body, 'phone')
             .type('string', '')
             .required('')
-            .validMobile('')
+            .lenMatch(11, '')
             .get(),
         password: validator.with(body, 'password')
             .type('string', '')
@@ -171,14 +187,7 @@ handler._validate = (body) => {
             .get(),
     }
 
-    let errors = {}
-    for(let x in validation){
-        if(validation[x].error) {
-            errors[x] = validation[x].error_msg
-        }
-    }
-
-    return errors
+    return validate(validation)
 }
 
 // export

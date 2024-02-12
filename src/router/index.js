@@ -1,11 +1,13 @@
 // dependencies
-const {sample} = require('./handler/Sample')
+const {token} = require('./handler/Token')
 const {user} = require('./handler/User')
+const {check} = require('./handler/Check')
 
 // module scaffolding
 const routes = {
-    'sample': sample,
+    'token': token,
     'user': user,
+    'check': check,
 }
 
 // exports module

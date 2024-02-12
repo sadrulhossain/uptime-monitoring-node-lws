@@ -8,7 +8,6 @@ const utilities = {}
 // parse json to object
 utilities.parseJsonToObject = (json_str) => {
     let output = {}
-
     try {
         output = JSON.parse(json_str)
     } catch {
@@ -25,6 +24,23 @@ utilities.hash = (str) => {
             .update(str)
             .digest('hex')
         : null
+}
+
+// generate random string
+utilities.generateRandomString = (str_len) => {
+    const len = typeof (str_len) === 'number' && str_len > 0 ? str_len : false
+    if(!len){
+        return false
+    }
+
+    const chars = 'abcdefghijklmnopqrstuvwxyz1234567890.$ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+
+    let str = ''
+    for(let i=0; i < len; i++){
+        const char = chars.charAt(Math.floor(Math.random() * chars.length))
+        str += char
+    }
+    return str
 }
 
 // export module
